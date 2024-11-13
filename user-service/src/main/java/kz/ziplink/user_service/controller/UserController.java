@@ -41,4 +41,11 @@ public class UserController {
         if (isDeleted) return new ResponseEntity<>("User deleted", HttpStatus.OK);
         else return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        if (user != null) return new ResponseEntity<>(user, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

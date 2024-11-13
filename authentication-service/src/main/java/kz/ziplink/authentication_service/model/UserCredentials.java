@@ -1,32 +1,18 @@
-package kz.ziplink.user_service.model;
+package kz.ziplink.authentication_service.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+public class UserCredentials {
 
-@Table(name = "users")
-@Entity
-public class User {
-    @JsonIgnore
-    @Id
-    private String id;
     private String username;
     private String email;
     private String password;
 
-    public User() {}
+    public UserCredentials() {}
 
-    public User(String id, String username, String email, String password) {
-        this.id = id;
+    public UserCredentials(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
-
-    public String getId() { return id; }
-
-    public void setId(String id) { this.id = id; }
 
     public String getUsername() { return username; }
 
