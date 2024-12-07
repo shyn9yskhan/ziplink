@@ -7,4 +7,6 @@ public interface ProfileService {
     Profile getProfile(String id);
     boolean updateProfile(String id, Profile updatedProfile);
     boolean deleteProfile(String id);
+    Profile getProfileByUsername(String username);
+    String getProfileIdByUsername(String username);
 }

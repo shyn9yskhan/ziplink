@@ -58,4 +58,14 @@ public class ProfileServiceImpl implements ProfileService {
         }
         else return false;
     }
+
+    @Override
+    public Profile getProfileByUsername(String username) {
+        return profileRepository.findByUsername(username).orElse(null);
+    }
+
+    @Override
+    public String getProfileIdByUsername(String username) {
+        return profileRepository.findProfileIdByUsername(username).orElse(null);
+    }
 }

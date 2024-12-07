@@ -18,6 +18,22 @@ spring:
             predicates:
               - Path=/profile/**
             uri: http://localhost:8081
+        -   id: public-profile-content
+            predicates:
+              - Path=/profile-content/public/{username}
+            uri: http://localhost:8086
+        -   filters:
+              - AuthenticationFilter
+            id: profile-content-aggregator-service
+            predicates:
+              - Path=/profile-content/**
+            uri: http://localhost:8086
+        -   filters:
+              - AuthenticationFilter
+            id: block-service
+            predicates:
+              - Path=/block/**
+            uri: http://localhost:8083
         -   id: authentication-service
             predicates:
               - Path=/auth/**

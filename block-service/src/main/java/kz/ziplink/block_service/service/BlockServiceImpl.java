@@ -1,5 +1,6 @@
 package kz.ziplink.block_service.service;
 
+import kz.ziplink.block_service.client.ProfileClient;
 import kz.ziplink.block_service.model.Block;
 import kz.ziplink.block_service.model.Content;
 import kz.ziplink.block_service.repository.BlockRepository;
@@ -12,9 +13,11 @@ import java.util.List;
 public class BlockServiceImpl implements BlockService {
 
     BlockRepository blockRepository;
+    ProfileClient profileClient;
 
-    public BlockServiceImpl(BlockRepository blockRepository) {
+    public BlockServiceImpl(BlockRepository blockRepository, ProfileClient profileClient) {
         this.blockRepository = blockRepository;
+        this.profileClient = profileClient;
     }
 
     @Override
@@ -47,6 +50,21 @@ public class BlockServiceImpl implements BlockService {
         if (content != null) {
             blockRepository.delete(content);
             return true;
+        }
+        else return false;
+    }
+
+    @Override
+    public boolean updateUserBlocks(String username, List<Block> updatedBlocks) {
+        String profileId = profileClient.getProfileIdByUsername(username).getBody();
+        if (profileId != null) {
+            Content content = blockRepository.findByProfileId(profileId).orElse(null);
+            if (content != null) {
+                content.setBlocks(updatedBlocks);
+                blockRepository.save(content);
+                return true;
+            }
+            else return false;
         }
         else return false;
     }

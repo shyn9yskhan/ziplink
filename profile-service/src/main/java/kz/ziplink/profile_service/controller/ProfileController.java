@@ -41,4 +41,18 @@ public class ProfileController {
         if (isDeleted) return new ResponseEntity<>("Profile deleted", HttpStatus.OK);
         else return new ResponseEntity<>("Profile not found", HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Profile> getProfileByUsername(@PathVariable String username) {
+        Profile profile = profileService.getProfileByUsername(username);
+        if (profile != null) return new ResponseEntity<>(profile, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/username/{username}/profileId")
+    public ResponseEntity<String> getProfileIdByUsername(@PathVariable String username) {
+        String profileId = profileService.getProfileIdByUsername(username);
+        if (profileId != null) return new ResponseEntity<>(profileId, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
