@@ -6,6 +6,7 @@ import kz.ziplink.profile_content_aggregator_service.model.Block;
 import kz.ziplink.profile_content_aggregator_service.model.Profile;
 import kz.ziplink.profile_content_aggregator_service.model.ProfileContent;
 import kz.ziplink.profile_content_aggregator_service.model.PublicProfileContent;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class ProfileContentAggregatorServiceImpl implements ProfileContentAggreg
     }
 
     @Override
+    @Cacheable(value = "publicProfileContents", key = "#username", unless = "#result == null")
     public PublicProfileContent getPublicProfileContent(String username) {
         Profile profile = profileClient.getProfileByUsername(username).getBody();
         if (profile == null) {

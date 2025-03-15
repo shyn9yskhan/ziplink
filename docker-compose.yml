@@ -1,0 +1,133 @@
+version: "3.8"
+
+services:
+  profile-service:
+    build:
+      context: ./profile-service
+    ports:
+      - 8081:8081
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+    container_name: profile-service
+
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - 8082:8082
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+    container_name: user-service
+
+  block-service:
+    build:
+      context: ./block-service
+    ports:
+      - 8083:8083
+    networks:
+      - app-network
+    depends_on:
+      - mongo
+    container_name: block-service
+
+  id-generation-service:
+    build:
+      context: ./id-generation-service
+    ports:
+      - 8084:8084
+    networks:
+      - app-network
+    container_name: id-generation-service
+
+  authentication-service:
+    build:
+      context: ./authentication-service
+    ports:
+      - 8085:8085
+    networks:
+      - app-network
+    container_name: authentication-service
+
+  profile-content-aggregator-service:
+    build:
+      context: ./profile-content-aggregator-service
+    ports:
+      - 8086:8086
+    networks:
+      - app-network
+    depends_on:
+      - redis
+    container_name: profile-content-aggregator-service
+
+  qr-code-generation-service:
+    build:
+      context: ./qr-code-generation-service
+    ports:
+      - 8087:8087
+    networks:
+      - app-network
+    container_name: qr-code-generation-service
+
+  service-registry:
+    build:
+      context: ./service-registry
+    ports:
+      - 8761:8761
+    networks:
+      - app-network
+    container_name: service-registry
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - 9999:9999
+    networks:
+      - app-network
+    container_name: api-gateway
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sql001
+      POSTGRES_DB: ziplink
+    ports:
+      - 5432:5432
+    networks:
+      - app-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    container_name: postgres
+
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - app-network
+    volumes:
+      - mongo-data:/data/db
+    container_name: mongo
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - app-network
+    volumes:
+      - redis-data:/data
+    container_name: redis
+
+networks:
+  app-network:
+
+volumes:
+  postgres-data:
+  mongo-data:
+  redis-data:

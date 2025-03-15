@@ -11,37 +11,57 @@ spring:
             id: user-service
             predicates:
               - Path=/user/**
-            uri: http://localhost:8082
+            uri: http://user-service:8082
         -   filters:
               - AuthenticationFilter
             id: profile-service
             predicates:
               - Path=/profile/**
-            uri: http://localhost:8081
+            uri: http://profile-service:8081
         -   id: public-profile-content
             predicates:
               - Path=/profile-content/public/{username}
-            uri: http://localhost:8086
+            uri: http://profile-content-aggregator-service:8086
         -   filters:
               - AuthenticationFilter
             id: profile-content-aggregator-service
             predicates:
               - Path=/profile-content/**
-            uri: http://localhost:8086
+            uri: http://profile-content-aggregator-service:8086
         -   filters:
               - AuthenticationFilter
             id: block-service
             predicates:
               - Path=/block/**
-            uri: http://localhost:8083
+            uri: http://block-service:8083
+        -   filters:
+              - AuthenticationFilter
+            id: qr-code-generation-service
+            predicates:
+              - Path=/qrCodeGeneration/**
+            uri: http://qr-code-generation-service:8087
         -   id: authentication-service
             predicates:
               - Path=/auth/**
-            uri: http://localhost:8085
+            uri: http://authentication-service:8085
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:3000"
-            allowedMethods: GET, POST, PUT, DELETE, OPTIONS
+            allowedOrigins:
+            - "https://ziplink.kz"
+            - "http://localhost:3000"
+            allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
             allowedHeaders: "*"
             allowCredentials: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
