@@ -3,7 +3,9 @@ package kz.ziplink.profile_service.service;
 import kz.ziplink.profile_service.client.BlockClient;
 import kz.ziplink.profile_service.client.IdGenerationClient;
 import kz.ziplink.profile_service.model.Profile;
+import kz.ziplink.profile_service.model.ProfileEvent;
 import kz.ziplink.profile_service.repository.ProfileRepository;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,11 +15,13 @@ public class ProfileServiceImpl implements ProfileService {
     ProfileRepository profileRepository;
     IdGenerationClient idGenerationClient;
     BlockClient blockClient;
+    KafkaTemplate<String, ProfileEvent> kafka;
 
-    public ProfileServiceImpl(ProfileRepository profileRepository, IdGenerationClient idGenerationClient, BlockClient blockClient) {
+    public ProfileServiceImpl(ProfileRepository profileRepository, IdGenerationClient idGenerationClient, BlockClient blockClient, KafkaTemplate<String, ProfileEvent> kafka) {
         this.profileRepository = profileRepository;
         this.idGenerationClient = idGenerationClient;
         this.blockClient = blockClient;
+        this.kafka = kafka;
     }
 
     @Override
@@ -27,6 +31,9 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setId(generatedProfileId);
         profile.setUsername(username);
         profileRepository.save(profile);
+
+        ProfileEvent profileEvent = new ProfileEvent(generatedProfileId, System.currentTimeMillis());
+        kafka.send("profile-events", profileEvent);
 
         blockClient.createBlocks(generatedProfileId);
     }
@@ -45,6 +52,10 @@ public class ProfileServiceImpl implements ProfileService {
             profile.setUsername(updatedProfile.getUsername());
 
             profileRepository.save(profile);
+
+            ProfileEvent profileEvent = new ProfileEvent(profile.getId(), System.currentTimeMillis());
+            kafka.send("profile-events", profileEvent);
+
             return true;
         }
         else return false;
@@ -54,6 +65,10 @@ public class ProfileServiceImpl implements ProfileService {
     public boolean deleteProfile(String id) {
         if (profileRepository.existsById(id)) {
             profileRepository.deleteById(id);
+
+            ProfileEvent profileEvent = new ProfileEvent(id, System.currentTimeMillis());
+            kafka.send("profile-events", profileEvent);
+
             return true;
         }
         else return false;

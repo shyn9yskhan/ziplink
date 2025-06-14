@@ -1,0 +1,29 @@
+package kz.ziplink.search_index_aggregator_service.model;
+
+public class ProfileEvent {
+    private String profileId;
+    private long timestamp;
+
+    public ProfileEvent() {}
+
+    public ProfileEvent(String profileId, long timestamp) {
+        this.profileId = profileId;
+        this.timestamp = timestamp;
+    }
+
+    public String getProfileId() {
+        return profileId;
+    }
+
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+}
